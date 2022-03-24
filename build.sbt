@@ -1,4 +1,4 @@
-val dottyVersion = "3.1.2-RC2"
+val dottyVersion = "3.1.3-RC1-bin-20220322-e54a934-NIGHTLY"
 
 lazy val root = (project in file("."))
   .settings(
