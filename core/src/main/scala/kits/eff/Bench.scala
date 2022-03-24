@@ -7,6 +7,8 @@ class Bench {
 
   def benchEffCall(): (Int, Int) = Eff.run(State.run(0)(Bench.benchEff(1 to N)))
 
+  def benchEffCall2(): (Vector[Int], Int) = Eff.run(Writer.runVec(Reader.run(0)(Bench.benchEff(1 to N))))
+
   def benchTransCall(): (Int, Int) = Bench.benchTrans[TailRec](1 to N).apply(0).result
 
   def benchTransSCall(): (Int, (Int, Int)) = Bench.benchTrans[[A] =>> StateT[TailRec, Int, A]](1 to N).apply(0).apply(0).result

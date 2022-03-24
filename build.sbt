@@ -5,7 +5,10 @@ lazy val root = (project in file("."))
     inThisBuild(List(
       organization := "org.halcat",
       scalaVersion := dottyVersion,
-      version := "0.1"
+      version := "0.1",
+      scalacOptions ++= Seq(
+        "-explain"
+      )
     )),
     name := "kits-eff-dotty"
   )

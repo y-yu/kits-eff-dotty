@@ -15,13 +15,7 @@ class Benchmarks {
   def benchEffJmh(): Unit = {
     val bench = new Bench()
 
-    try {
-      bench.benchEffCall()
-    } catch {
-      case e =>
-        throw e
-        //println(e)
-    }
+    bench.benchEffCall2()
   }
 
   @Benchmark
