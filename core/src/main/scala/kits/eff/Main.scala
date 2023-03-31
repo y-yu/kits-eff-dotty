@@ -1,12 +1,12 @@
 package kits.eff
-/*
+
 object Main {
-  val hoge: Eff[[A] => Reader[Int, A] | Writer[String, A], Int] = for {
+  val hoge: Eff[[A] =>> Reader[Int, A] | Writer[String, A], Int] = for {
     i <- Reader.ask[Int]
     _ <- Writer.tell(i.toString)
   } yield i + 1
 
-  val fuga: Eff[[A] => State[Int, A], Int] = for {
+  val fuga: Eff[[A] =>> State[Int, A], Int] = for {
     i <- Reader.ask[Int]
     _ <- Writer.tell(i + 1)
     j <- Reader.ask[Int]
@@ -20,6 +20,9 @@ object Main {
 
     val r3 = Eff.run(State.run(0)(fuga))
     assert(r3 == (1 -> 2))
+
+    val arrs = Bench.benchEff(1 to 10000).asInstanceOf[Eff.Impure[[A] =>> State[Int, A], Int, Int]].arrs
+    val result = arrs(1)
+    pprint.pprintln(result)
   }
 }
- */

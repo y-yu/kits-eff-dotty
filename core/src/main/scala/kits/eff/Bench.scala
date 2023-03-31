@@ -3,20 +3,22 @@ package kits.eff
 import scala.util.control.TailCalls._
 
 class Bench {
-  val N = 1000000
+  val N = 10000
 
   def benchEffCall(): (Int, Int) = Eff.run(State.run(0)(Bench.benchEff(1 to N)))
 
+  def benchEffCall2(): (Vector[Int], Int) = Eff.run(Writer.runVec(Reader.run(0)(Bench.benchEff(1 to N))))
+
   def benchTransCall(): (Int, Int) = Bench.benchTrans[TailRec](1 to N).apply(0).result
 
-  def benchTransSCall(): (Int, (Int, Int)) = Bench.benchTrans[[A] => StateT[TailRec, Int, A]](1 to N).apply(0).apply(0).result
+  def benchTransSCall(): (Int, (Int, Int)) = Bench.benchTrans[[A] =>> StateT[TailRec, Int, A]](1 to N).apply(0).apply(0).result
 
-  def benchTransSSCall(): (Int, (Int, (Int, Int))) = Bench.benchTrans[[A] => StateT[[A] => StateT[TailRec, Int, A], Int, A]](1 to N).apply(0).apply(0).apply(0).result
+  def benchTransSSCall(): (Int, (Int, (Int, Int))) = Bench.benchTrans[[A] =>> StateT[[A] =>> StateT[TailRec, Int, A], Int, A]](1 to N).apply(0).apply(0).apply(0).result
 }
 
 object Bench {
-  def benchEff(ns: Seq[Int]): Eff[[A] => State[Int, A], Int] =
-    ns.foldLeft(Eff.Pure(1): Eff[[A] => State[Int, A], Int]) { (acc, n) =>
+  def benchEff(ns: Seq[Int]): Eff[[A] =>> State[Int, A], Int] =
+    ns.foldLeft(Eff.Pure(1): Eff[[A] =>> State[Int, A], Int]) { (acc, n) =>
       if n % 5 == 0 then for {
         acc <- acc
         s <- Reader.ask[Int]
@@ -47,7 +49,7 @@ object Monad {
     def flatMap[A, B](fa: => TailRec[A])(f: A => TailRec[B]) = tailcall(fa).flatMap(f)
   }
 
-  implicit def stateT[F[_], S](implicit F: Monad[F]): Monad[[A] => StateT[F, S, A]] = new Monad[[A] => StateT[F, S, A]] {
+  implicit def stateT[F[_], S](implicit F: Monad[F]): Monad[[A] =>> StateT[F, S, A]] = new Monad[[A] =>> StateT[F, S, A]] {
     def pure[A](a: A) = StateT.pure(a)
     def flatMap[A, B](fa: => StateT[F, S, A])(f: A => StateT[F, S, B]) = fa.flatMap(f)
   }
