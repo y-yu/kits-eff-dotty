@@ -87,7 +87,7 @@ final class TagMacro(using override val qctx: Quotes) extends InspectorBase {
     * Returns true if the given type contains no type parameters
     * (this means the type is not "weak" https://stackoverflow.com/questions/29435985/weaktypetag-v-typetag)
     */
-  private def allPartsStrong(typeRepr: TypeRepr): Boolean =
+  override def allPartsStrong(typeRepr: TypeRepr): Boolean =
     typeRepr.dealias match {
       case x if x.typeSymbol.isTypeParam => false
       case AppliedType(tpe, args) => allPartsStrong(tpe) && args.forall(allPartsStrong)
